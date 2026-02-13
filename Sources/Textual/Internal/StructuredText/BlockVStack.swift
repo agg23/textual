@@ -40,7 +40,10 @@ extension StructuredText {
     @Environment(\.listItemSpacingEnabled) private var listItemSpacingEnabled
     @Environment(\.resolvedListItemSpacing) private var resolvedListItemSpacing
 
-    @State private var blockSpacing = BlockSpacing()
+    // Default to 0/0 to prevent BlockVStackLayout.makeCache from hitting the expensive
+    // LayoutSubview.spacing.distance(to:along:) fallback on the first layout pass,
+    // before onPreferenceChange has fired to populate the real values
+    @State private var blockSpacing = BlockSpacing(top: 0, bottom: 0)
 
     private let content: Content
 
