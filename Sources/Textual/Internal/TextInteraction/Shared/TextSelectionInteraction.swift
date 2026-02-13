@@ -14,6 +14,7 @@ import SwiftUI
 struct TextSelectionInteraction: ViewModifier {
   #if TEXTUAL_ENABLE_TEXT_SELECTION
     @Environment(\.textSelection) private var textSelection
+    @Environment(\.textSelectionLayoutActive) private var textSelectionLayoutActive
     @Environment(TextSelectionCoordinator.self) private var coordinator: TextSelectionCoordinator?
 
     @State private var model = TextSelectionModel()
@@ -23,12 +24,23 @@ struct TextSelectionInteraction: ViewModifier {
     #if TEXTUAL_ENABLE_TEXT_SELECTION
       if textSelection.allowsSelection {
         content
-          .overlayTextLayoutCollection { layoutCollection in
-            Color.clear
-              .onChange(of: AnyTextLayoutCollection(layoutCollection), initial: true) {
-                model.setCoordinator(coordinator)
-                model.setLayoutCollection(layoutCollection)
+          .overlayPreferenceValue(Text.LayoutKey.self) { value in
+            // Can't conditionally apply `overlayPreferenceValue`, so at least conditionally apply the inner work
+            if textSelectionLayoutActive {
+              GeometryReader { geometry in
+                Color.clear
+                  .onChange(of: AnyTextLayoutCollection(
+                    LiveTextLayoutCollection(base: value, geometry: geometry)
+                  ), initial: true) {
+                    model.setCoordinator(coordinator)
+                    model.setLayoutCollection(
+                      LiveTextLayoutCollection(base: value, geometry: geometry)
+                    )
+                  }
               }
+            } else {
+              Color.clear
+            }
           }
           .modifier(PlatformTextSelectionInteraction(model: model))
       } else {
@@ -46,5 +58,7 @@ struct TextSelectionInteraction: ViewModifier {
     @available(watchOS, unavailable)
     @usableFromInline
     @Entry var textSelection: any TextSelectability.Type = DisabledTextSelectability.self
+
+    @Entry public var textSelectionLayoutActive: Bool = true
   }
 #endif

@@ -157,6 +157,19 @@ extension TextualNamespace where Base: View {
     #endif
   }
 
+  /// Controls whether the text selection layout overlay is active.
+  ///
+  /// When `false`, the expensive `overlayPreferenceValue` + `GeometryReader` machinery
+  /// inside `TextSelectionInteraction` is bypassed, while the view tree shape remains
+  /// stable (no branching). Use this to disable text selection layout tracking during
+  // scroll and re-enable it when scroll is idle
+  ///
+  /// Text selection must also be enabled via `textSelection(_:)` for this to
+  /// have any effect
+  @MainActor public func textSelectionEnabled(_ enabled: Bool) -> some View {
+    base.environment(\.textSelectionLayoutActive, enabled)
+  }
+
   /// Sets the spacing used between table cells in ``StructuredText``.
   public func tableCellSpacing(
     horizontal: CGFloat? = nil,
