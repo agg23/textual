@@ -29,7 +29,17 @@ extension StructuredText {
     /// Creates a view that represents a heading.
     @MainActor @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 
+    /// The block spacing to apply above and below headings.
+    var blockSpacing: FontScaled<BlockSpacing> { get }
+
     typealias Configuration = HeadingStyleConfiguration
+  }
+}
+
+extension StructuredText.HeadingStyle {
+  /// Default block spacing.
+  public var blockSpacing: FontScaled<StructuredText.BlockSpacing> {
+    .scaled(top: 0, bottom: 0)
   }
 }
 

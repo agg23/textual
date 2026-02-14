@@ -15,20 +15,6 @@ extension View {
 }
 
 extension TextualNamespace where Base: View {
-  /// Sets the spacing above and below the current block.
-  @MainActor public func blockSpacing(_ blockSpacing: StructuredText.BlockSpacing) -> some View {
-    base.preference(key: StructuredText.BlockSpacingKey.self, value: blockSpacing)
-  }
-
-  /// Sets the spacing above and below the current block using a font-relative value.
-  @MainActor public func blockSpacing(
-    _ blockSpacing: FontScaled<StructuredText.BlockSpacing>
-  ) -> some View {
-    WithFontScaledValue(blockSpacing) { blockSpacing in
-      base.preference(key: StructuredText.BlockSpacingKey.self, value: blockSpacing)
-    }
-  }
-
   /// Sets line spacing using a font-relative value.
   @MainActor public func lineSpacing(_ lineSpacing: FontScaled<CGFloat>) -> some View {
     WithFontScaledValue(lineSpacing) {
@@ -64,13 +50,13 @@ extension TextualNamespace where Base: View {
     alignment: Alignment = .center
   ) -> some View {
     WithFontScaledValue(
-      FontScaled(
+      .scaled(
         ProposedViewSize(
           width: width?.value,
           height: height?.value
         )
       )
-    ) { size in
+    ) { (size: ProposedViewSize) in
       base.frame(width: size.width, height: size.height, alignment: alignment)
     }
   }

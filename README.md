@@ -203,6 +203,10 @@ Here's a practical example, a custom heading style that adds a subtle underline 
 struct CustomHeadingStyle: StructuredText.HeadingStyle {
   private static let fontScales: [CGFloat] = [2, 1.5, 1.25, 1, 0.875, 0.85]
   
+  var blockSpacing: FontScaled<StructuredText.BlockSpacing> {
+    .scaled(top: 1.5, bottom: 0.5)
+  }
+
   func makeBody(configuration: Configuration) -> some View {
     let headingLevel = min(configuration.headingLevel, 6)
     let fontScale = Self.fontScales[headingLevel - 1]
@@ -214,10 +218,9 @@ struct CustomHeadingStyle: StructuredText.HeadingStyle {
 
       if headingLevel == 1 {
         Divider()
-          .textual.padding(.top, .fontScaled(0.25))
+          .textual.padding(.top, .scaled(0.25))
       }
     }
-    .textual.blockSpacing(.fontScaled(top: 1.5, bottom: 0.5))
   }
 }
 ```
@@ -227,23 +230,22 @@ build custom layouts and apply additional styling.
 
 #### Font-Relative Measurements
 
-Notice the `.fontScaled()` values in the example above. Textual's font-relative measurement system ensures your layouts
+Notice the `.scaled()` values in the example above. Textual's font-relative measurement system ensures your layouts
 scale harmoniously with text size:
 
 ```swift
-.textual.padding(.fontScaled(1.0))
-.textual.blockSpacing(.fontScaled(top: 0.8, bottom: 1.2))
+.textual.padding(.scaled(1.0))
 ```
 
 These measurements adapt automatically to the current font size, dynamic type settings, and accessibility preferences.
-A padding of `.fontScaled(0.5)` creates padding that is half of the current font size. As users adjust text size, your
+A padding of `.scaled(0.5)` creates padding that is half of the current font size. As users adjust text size, your
 spacing scales proportionally.
 
 You may have noticed the `.textual` prefix on modifiers throughout these examples. Textual organizes its view modifiers
 under this namespace, making them easy to discover through autocomplete while avoiding potential naming conflicts with
 SwiftUI or other libraries. When you type `.textual`, you see only Textual-specific capabilities.
 
-Many modifiers in the `.textual` namespace accept font-relative measurements through `.fontScaled()` values. Beyond
+Many modifiers in the `.textual` namespace accept font-relative measurements through `.scaled()` values. Beyond
 padding and spacing, you can use these measurements for frame sizes, insets, and any numeric value where scaling with
 text size makes sense.
 

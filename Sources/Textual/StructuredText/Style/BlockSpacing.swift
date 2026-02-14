@@ -39,7 +39,12 @@ extension StructuredText.BlockSpacing: FontScalable {
 
 extension FontScaled where Value == StructuredText.BlockSpacing {
   /// A convenience constructor for font-scaled `StructuredText.BlockSpacing` values.
-  public static func fontScaled(top: CGFloat? = nil, bottom: CGFloat? = nil) -> Self {
-    FontScaled(StructuredText.BlockSpacing(top: top, bottom: bottom))
+  public static func scaled(top: CGFloat? = nil, bottom: CGFloat? = nil) -> Self {
+    .scaled(StructuredText.BlockSpacing(top: top, bottom: bottom))
+  }
+
+  /// A convenience constructor for fixed (non-scaling) `StructuredText.BlockSpacing` values.
+  public static func fixed(top: CGFloat? = nil, bottom: CGFloat? = nil) -> Self {
+    .fixed(StructuredText.BlockSpacing(top: top, bottom: bottom))
   }
 }

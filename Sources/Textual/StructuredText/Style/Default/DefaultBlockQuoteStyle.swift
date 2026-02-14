@@ -12,11 +12,15 @@ extension StructuredText {
       self.borderColor = borderColor
     }
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 0.8, bottom: 0.8)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       configuration.label
         .frame(maxWidth: .infinity, alignment: .leading)
-        .textual.lineSpacing(.fontScaled(0.471))
-        .textual.padding(.fontScaled(0.941))
+        .textual.lineSpacing(.scaled(0.471))
+        .textual.padding(.scaled(0.941))
         .background {
           ZStack(alignment: .leading) {
             Rectangle()

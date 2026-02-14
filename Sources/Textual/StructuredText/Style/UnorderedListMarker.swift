@@ -44,7 +44,7 @@ extension StructuredText {
     public init(
       symbolName: String,
       scale: CGFloat = 1,
-      minWidth: FontScaled<CGFloat> = .fontScaled(1.5)
+      minWidth: FontScaled<CGFloat> = .scaled(1.5)
     ) {
       self.symbolName = symbolName
       self.scale = scale
@@ -117,7 +117,7 @@ extension StructuredText {
     /// Creates a dash marker.
     ///
     /// - Parameter minWidth: A font-relative minimum width for the marker.
-    public init(minWidth: FontScaled<CGFloat> = .fontScaled(1.5)) {
+    public init(minWidth: FontScaled<CGFloat> = .scaled(1.5)) {
       self.minWidth = minWidth
     }
 

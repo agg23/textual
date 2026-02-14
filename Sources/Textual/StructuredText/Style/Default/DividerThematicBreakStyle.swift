@@ -6,11 +6,14 @@ extension StructuredText {
     /// Creates a divider thematic break style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 1.6, bottom: 1.6)
+    }
+
     public func makeBody(configuration _: Configuration) -> some View {
       Divider()
         .frame(minHeight: 1)
         .overlay(DynamicColor.grid)
-        .textual.blockSpacing(.fontScaled(top: 1.6, bottom: 1.6))
     }
   }
 }

@@ -6,10 +6,14 @@ extension StructuredText {
     /// Creates the default code block style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 0.88, bottom: 0)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       Overflow {
         configuration.label
-          .textual.lineSpacing(.fontScaled(0.39))
+          .textual.lineSpacing(.scaled(0.39))
           .textual.fontScale(0.882)
           .fixedSize(horizontal: false, vertical: true)
           .monospaced()
@@ -22,7 +26,6 @@ extension StructuredText {
         RoundedRectangle(cornerRadius: 4, style: .continuous)
           .stroke(DynamicColor.grid, lineWidth: 1)
       )
-      .textual.blockSpacing(.fontScaled(top: 0.88, bottom: 0))
     }
   }
 }

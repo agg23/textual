@@ -7,14 +7,18 @@ extension StructuredText {
     public init() {
     }
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .fixed(top: 0, bottom: 16)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       HStack(spacing: 0) {
         RoundedRectangle(cornerRadius: 6)
           .fill(DynamicColor.gitHubBorder)
-          .textual.frame(width: .fontScaled(0.2))
+          .textual.frame(width: .scaled(0.2))
         configuration.label
           .foregroundStyle(DynamicColor.gitHubSecondary)
-          .textual.padding(.horizontal, .fontScaled(1))
+          .textual.padding(.horizontal, .scaled(1))
       }
     }
   }

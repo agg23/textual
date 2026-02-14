@@ -1,7 +1,5 @@
 import SwiftUI
 
 extension EnvironmentValues {
-  @Entry var listItemSpacing: FontScaled<StructuredText.BlockSpacing> = .fontScaled(top: 0.25)
-  @Entry var resolvedListItemSpacing: StructuredText.BlockSpacing = .init()
-  @Entry var listItemSpacingEnabled: Bool = false
+  @Entry var listItemSpacing: FontScaled<StructuredText.BlockSpacing> = .scaled(top: 0.25)
 }

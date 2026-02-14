@@ -11,34 +11,43 @@ import SwiftUI
 ///
 /// ```swift
 /// struct CompactParagraphStyle: StructuredText.ParagraphStyle {
+///   var blockSpacing: FontScaled<StructuredText.BlockSpacing> {
+///     .scaled(top: 0.8)
+///   }
 ///   func makeBody(configuration: StructuredText.BlockStyleConfiguration) -> some View {
 ///     configuration.label
-///       .textual.lineSpacing(.fontScaled(0.2))
-///       .textual.blockSpacing(.fontScaled(top: 0.8))
+///       .textual.lineSpacing(.scaled(0.2))
 ///   }
 /// }
 ///
 /// StructuredText(markdown: "Hello, world!")
 ///   .textual.paragraphStyle(CompactParagraphStyle())
 /// ```
-public struct FontScaled<Value> where Value: FontScalable {
-  /// The unscaled value.
-  public let value: Value
+public enum FontScaled<Value> where Value: FontScalable {
+  case scaled(Value)
+  case fixed(Value)
 
-  /// Creates a font-scaled value.
-  public init(_ value: Value) {
-    self.value = value
+  /// The unscaled value.
+  public var value: Value {
+    switch self {
+    case .scaled(let v), .fixed(let v): return v
+    }
   }
 
   /// Returns the value scaled for the given environment.
   public func resolve(in environment: TextEnvironmentValues) -> Value {
-    let font = environment.font ?? .body
-
-    guard let fontSize = font.provider()?.size(in: environment) else {
+    switch self {
+    case .fixed(let value):
       return value
-    }
+    case .scaled(let value):
+      let font = environment.font ?? .body
 
-    return value.scaled(by: fontSize)
+      guard let fontSize = font.provider()?.size(in: environment) else {
+        return value
+      }
+
+      return value.scaled(by: fontSize)
+    }
   }
 }
 
@@ -51,15 +60,6 @@ extension FontScaled: Hashable where Value: Hashable {}
 extension FontScaled: Decodable where Value: Decodable {}
 
 extension FontScaled: Encodable where Value: Encodable {}
-
-// MARK: - BinaryFloatingPoint
-
-extension FontScaled where Value: BinaryFloatingPoint {
-  /// Wraps a numeric value as a font-scaled value.
-  public static func fontScaled(_ value: Value) -> Self {
-    FontScaled(value)
-  }
-}
 
 /// A type that can scale itself proportionally to a font size.
 public protocol FontScalable {
@@ -92,13 +92,13 @@ extension EdgeInsets: FontScalable {
 
 extension FontScaled where Value == EdgeInsets {
   /// Creates font-scaled insets.
-  public static func fontScaled(
+  public static func scaled(
     top: CGFloat,
     leading: CGFloat,
     bottom: CGFloat,
     trailing: CGFloat
   ) -> Self {
-    FontScaled(
+    .scaled(
       EdgeInsets(
         top: top,
         leading: leading,
@@ -133,7 +133,7 @@ extension CGSize: FontScalable {
 
 extension FontScaled where Value == CGSize {
   /// Creates a font-scaled size.
-  public static func fontScaled(width: CGFloat, height: CGFloat) -> Self {
-    FontScaled(CGSize(width: width, height: height))
+  public static func scaled(width: CGFloat, height: CGFloat) -> Self {
+    .scaled(CGSize(width: width, height: height))
   }
 }

@@ -8,10 +8,13 @@ extension StructuredText {
     /// Creates the default table style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 1.6, bottom: 1.6)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       configuration.label
         .textual.tableCellSpacing(horizontal: Self.borderWidth, vertical: Self.borderWidth)
-        .textual.blockSpacing(.fontScaled(top: 1.6, bottom: 1.6))
         .textual.tableOverlay { layout in
           Canvas { context, _ in
             for divider in layout.dividers() {

@@ -11,7 +11,17 @@ extension StructuredText {
     /// Creates a view that represents a thematic break.
     @MainActor @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 
+    /// The block spacing to apply above and below thematic breaks.
+    var blockSpacing: FontScaled<BlockSpacing> { get }
+
     typealias Configuration = BlockStyleConfiguration
+  }
+}
+
+extension StructuredText.ThematicBreakStyle {
+  /// Default block spacing.
+  public var blockSpacing: FontScaled<StructuredText.BlockSpacing> {
+    .scaled(top: 0, bottom: 0)
   }
 }
 

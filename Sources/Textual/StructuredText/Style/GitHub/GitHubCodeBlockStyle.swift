@@ -6,10 +6,14 @@ extension StructuredText {
     /// Creates the GitHub code block style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .fixed(top: 0, bottom: 16)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       Overflow {
         configuration.label
-          .textual.lineSpacing(.fontScaled(0.225))
+          .textual.lineSpacing(.scaled(0.225))
           .textual.fontScale(0.85)
           .fixedSize(horizontal: false, vertical: true)
           .monospaced()
@@ -17,7 +21,6 @@ extension StructuredText {
       }
       .background(DynamicColor.gitHubSecondaryBackground)
       .clipShape(RoundedRectangle(cornerRadius: 6))
-      .textual.blockSpacing(.init(top: 0, bottom: 16))
     }
   }
 }

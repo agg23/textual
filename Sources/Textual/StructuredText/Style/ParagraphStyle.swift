@@ -11,7 +11,17 @@ extension StructuredText {
     /// Creates a view that represents a paragraph.
     @MainActor @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 
+    /// The block spacing to apply above and below paragraphs.
+    var blockSpacing: FontScaled<BlockSpacing> { get }
+
     typealias Configuration = BlockStyleConfiguration
+  }
+}
+
+extension StructuredText.ParagraphStyle {
+  /// Default block spacing.
+  public var blockSpacing: FontScaled<StructuredText.BlockSpacing> {
+    .scaled(top: 0, bottom: 0)
   }
 }
 

@@ -6,25 +6,26 @@ import SwiftUI
 // blocks' top and bottom spacing collapses by taking the maximum value rather than summing,
 // matching how CSS margins work.
 //
-// List items can override block spacing with environment-driven list item spacing for consistent
-// spacing within lists regardless of individual block preferences.
 
 extension StructuredText {
   struct BlockVStack<Content: View>: View {
     @Environment(\.multilineTextAlignment) private var textAlignment
 
+    private let spacings: [BlockSpacing]
     private let content: Content
 
-    init(@ViewBuilder content: () -> Content) {
+    init(spacings: [BlockSpacing], @ViewBuilder content: () -> Content) {
+      self.spacings = spacings
       self.content = content()
     }
 
     var body: some View {
       Group(subviews: content) { children in
-        BlockVStackLayout(textAlignment: textAlignment) {
-          ForEach(children) {
-            BlockLayoutView($0)
-          }
+        BlockVStackLayout(
+          textAlignment: textAlignment,
+          spacings: spacings
+        ) {
+          ForEach(children) { $0 }
         }
       }
     }
@@ -36,50 +37,20 @@ extension StructuredText {
     static let defaultValue: TextAlignment? = nil
   }
 
-  fileprivate struct BlockLayoutView<Content: View>: View {
-    @Environment(\.listItemSpacingEnabled) private var listItemSpacingEnabled
-    @Environment(\.resolvedListItemSpacing) private var resolvedListItemSpacing
-
-    // Default to 0/0 to prevent BlockVStackLayout.makeCache from hitting the expensive
-    // LayoutSubview.spacing.distance(to:along:) fallback on the first layout pass,
-    // before onPreferenceChange has fired to populate the real values
-    @State private var blockSpacing = BlockSpacing(top: 0, bottom: 0)
-
-    private let content: Content
-
-    init(_ content: Content) {
-      self.content = content
-    }
-
-    var body: some View {
-      // Read the block spacing preference and apply it as a layout value
-      content
-        .onPreferenceChange(BlockSpacingKey.self) { @MainActor value in
-          // Override with the resolved list item spacing if enabled
-          blockSpacing = listItemSpacingEnabled ? resolvedListItemSpacing : value
-        }
-        .layoutValue(key: BlockSpacingKey.self, value: blockSpacing)
-    }
-  }
-
   fileprivate struct BlockVStackLayout: Layout {
     struct Cache {
       let spacings: [CGFloat]
     }
 
     let textAlignment: TextAlignment
+    let spacings: [BlockSpacing]
 
     func makeCache(subviews: Subviews) -> Cache {
       return Cache(
-        spacings: subviews.indices.dropLast().map { index in
-          let current = subviews[index]
-          let next = subviews[index + 1]
-          let currentBottom = current[BlockSpacingKey.self].bottom
-          let nextTop = next[BlockSpacingKey.self].top
-
-          // Take the maximum block spacing, otherwise the preferred view spacing
-          return [currentBottom, nextTop].compactMap(\.self).max()
-            ?? current.spacing.distance(to: next.spacing, along: .vertical)
+        spacings: spacings.indices.dropLast().map { index in
+          let currentBottom = spacings[index].bottom
+          let nextTop = spacings[index + 1].top
+          return [currentBottom, nextTop].compactMap(\.self).max() ?? 0
         }
       )
     }
@@ -162,14 +133,17 @@ extension StructuredText {
       }
     }
     Spacer()
-    StructuredText.BlockVStack {
+    StructuredText.BlockVStack(spacings: [
+      .init(top: 0, bottom: 16),
+      .init(top: 0, bottom: blockSpacing * 16),
+      .init(top: 16, bottom: 16),
+    ]) {
       Text(
         """
-        Listen to your sister, Morty. To live is to risk it all, otherwise you’re just an inert \
+        Listen to your sister, Morty. To live is to risk it all, otherwise you're just an inert \
         chunk of randomly assembled molecules drifting wherever the universe blows you.
         """
       )
-      .textual.blockSpacing(.fontScaled(bottom: 1))
       Text(
         """
         Listen, Morty, I hate to break it to you but what people call "love" is just a chemical \
@@ -178,14 +152,12 @@ extension StructuredText {
         Break the cycle, Morty. Rise above. Focus on science.
         """
       )
-      .textual.blockSpacing(.fontScaled(bottom: blockSpacing))
       Text(
         """
         Wow, I really Cronenberged up the whole place, huh Morty? Just a bunch a Cronenbergs \
         walkin' around.
         """
       )
-      .textual.blockSpacing(.fontScaled(top: 1, bottom: 1))
     }
     .border(Color.red)
     Spacer()

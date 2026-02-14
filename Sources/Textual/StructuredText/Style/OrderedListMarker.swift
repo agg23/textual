@@ -39,7 +39,7 @@ extension StructuredText {
     ///
     /// - Parameter minWidth: A font-relative minimum width for the marker, useful for aligning
     ///   multi-digit ordinals.
-    public init(minWidth: FontScaled<CGFloat> = .fontScaled(1.5)) {
+    public init(minWidth: FontScaled<CGFloat> = .scaled(1.5)) {
       self.minWidth = minWidth
     }
 
@@ -72,7 +72,7 @@ extension StructuredText {
     ///   - minWidth: A font-relative minimum width for the marker, useful for aligning markers.
     ///   - transform: A closure that converts the ordinal into a string (without the trailing period).
     public init(
-      minWidth: FontScaled<CGFloat> = .fontScaled(1.5), transform: @escaping (Int) -> String
+      minWidth: FontScaled<CGFloat> = .scaled(1.5), transform: @escaping (Int) -> String
     ) {
       self.minWidth = minWidth
       self.transform = transform

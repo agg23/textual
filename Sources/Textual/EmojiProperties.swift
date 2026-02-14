@@ -17,8 +17,8 @@ public struct EmojiProperties: Sendable, Hashable {
 
   /// Creates emoji properties with a custom size and baseline offset.
   public init(
-    size: FontScaled<CGSize> = .fontScaled(width: 1, height: 1),
-    baselineOffset: FontScaled<CGFloat> = .fontScaled(-0.1)
+    size: FontScaled<CGSize> = .scaled(width: 1, height: 1),
+    baselineOffset: FontScaled<CGFloat> = .scaled(-0.1)
   ) {
     self.size = size
     self.baselineOffset = baselineOffset

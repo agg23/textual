@@ -8,10 +8,13 @@ extension StructuredText {
     /// Creates the GitHub table style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .fixed(top: 0, bottom: 16)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       configuration.label
         .textual.tableCellSpacing(horizontal: Self.borderWidth, vertical: Self.borderWidth)
-        .textual.blockSpacing(.init(top: 0, bottom: 16))
         .textual.tableBackground { layout in
           Canvas { context, _ in
             for bounds in layout.evenRowBounds {

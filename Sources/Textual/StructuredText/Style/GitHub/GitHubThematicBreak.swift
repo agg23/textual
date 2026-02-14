@@ -6,11 +6,14 @@ extension StructuredText {
     /// Creates the GitHub thematic break style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .fixed(top: 24, bottom: 24)
+    }
+
     public func makeBody(configuration _: Configuration) -> some View {
       Divider()
-        .textual.frame(height: .fontScaled(0.25))
+        .textual.frame(height: .scaled(0.25))
         .overlay(DynamicColor.gitHubBorder)
-        .textual.blockSpacing(.init(top: 24, bottom: 24))
     }
   }
 }

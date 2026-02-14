@@ -6,10 +6,13 @@ extension StructuredText {
     /// Creates the default paragraph style.
     public init() {}
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 0.8)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       configuration.label
-        .textual.lineSpacing(.fontScaled(0.23))
-        .textual.blockSpacing(.fontScaled(top: 0.8))
+        .textual.lineSpacing(.scaled(0.23))
     }
   }
 }

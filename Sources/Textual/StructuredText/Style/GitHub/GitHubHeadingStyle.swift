@@ -5,16 +5,19 @@ extension StructuredText {
   public struct GitHubHeadingStyle: HeadingStyle {
     private static let fontScales: [CGFloat] = [2, 1.5, 1.25, 1, 0.875, 0.85]
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .fixed(top: 24, bottom: 16)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       let headingLevel = min(configuration.headingLevel, 6)
       let fontScale = Self.fontScales[headingLevel - 1]
 
-      WithFontScaledValue(.fontScaled(0.3)) { spacing in
+      WithFontScaledValue(.scaled(0.3)) { spacing in
         VStack(alignment: .leading, spacing: spacing) {
           makeLabel(configuration: configuration)
             .textual.fontScale(fontScale)
-            .textual.lineSpacing(.fontScaled(0.125))
-            .textual.blockSpacing(.init(top: 24, bottom: 16))
+            .textual.lineSpacing(.scaled(0.125))
             .fontWeight(.semibold)
           if headingLevel <= 2 {
             Divider()

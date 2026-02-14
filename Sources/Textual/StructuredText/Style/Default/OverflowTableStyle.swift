@@ -16,6 +16,10 @@ extension StructuredText {
       self.relativeWidth = relativeWidth
     }
 
+    public var blockSpacing: FontScaled<BlockSpacing> {
+      .scaled(top: 1.6, bottom: 1.6)
+    }
+
     public func makeBody(configuration: Configuration) -> some View {
       Overflow { state in
         let maxWidth = state.containerWidth.map {
@@ -37,7 +41,6 @@ extension StructuredText {
           .padding(Self.borderWidth)
       }
       .textual.tableCellSpacing(horizontal: Self.borderWidth, vertical: Self.borderWidth)
-      .textual.blockSpacing(.fontScaled(top: 1.6, bottom: 1.6))
     }
   }
 }

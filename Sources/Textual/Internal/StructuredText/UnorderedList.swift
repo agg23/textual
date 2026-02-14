@@ -15,8 +15,11 @@ extension StructuredText {
 
     var body: some View {
       let runs = content.blockRuns(parent: intent)
+      let resolvedSpacing = listItemSpacing.resolve(in: textEnvironment)
 
-      BlockVStack {
+      let spacings = Array(repeating: resolvedSpacing, count: runs.count)
+
+      BlockVStack(spacings: spacings) {
         ForEach(runs.indices, id: \.self) { index in
           let run = runs[index]
 
@@ -26,8 +29,6 @@ extension StructuredText {
           )
         }
       }
-      .environment(\.resolvedListItemSpacing, listItemSpacing.resolve(in: textEnvironment))
-      .environment(\.listItemSpacingEnabled, true)
     }
   }
 }

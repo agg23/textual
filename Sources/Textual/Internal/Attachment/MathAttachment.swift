@@ -49,7 +49,7 @@ struct MathAttachment: Attachment {
       fitting: proposal,
       font: .init(
         name: .init(environment.mathProperties.fontName),
-        size: FontScaled(environment.mathProperties.fontScale).resolve(in: environment)
+        size: FontScaled.scaled(environment.mathProperties.fontScale).resolve(in: environment)
       ),
       style: .init(displayStyle)
     )
@@ -67,7 +67,7 @@ private struct MathView: View {
       .mathFont(
         .init(
           name: .init(environment.mathProperties.fontName),
-          size: FontScaled(environment.mathProperties.fontScale).resolve(in: environment)
+          size: FontScaled.scaled(environment.mathProperties.fontScale).resolve(in: environment)
         )
       )
       .mathTypesettingStyle(.init(style))
