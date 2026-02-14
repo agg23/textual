@@ -27,7 +27,6 @@ import SwiftUI
 
 struct TextFragment<Content: AttributedStringProtocol>: View {
   @Environment(\.textEnvironment) private var textEnvironment
-  @State private var textBuilder: TextBuilder?
 
   private let content: Content
 
@@ -36,22 +35,35 @@ struct TextFragment<Content: AttributedStringProtocol>: View {
   }
 
   var body: some View {
-    text
-      .customAttribute(TextFragmentAttribute())
-      .onGeometryChange(for: CGSize?.self, of: \.textContainerSize) { size in
-        guard let size, let textBuilder else { return }
-        textBuilder.sizeChanged(size, environment: textEnvironment)
-      }
-      .onChange(of: content, initial: true) { _, newValue in
-        self.textBuilder = TextBuilder(newValue, environment: textEnvironment)
-      }
+    Inner(content: content, textEnvironment: textEnvironment)
       .modifier(TextSelectionBackground())
       .modifier(AttachmentOverlay(attachments: content.attachments()))
       .modifier(TextLinkInteraction(hasLinks: content.runs.contains { $0.link != nil }))
   }
 
-  private var text: Text {
-    textBuilder?.text ?? Text(verbatim: "")
+  private struct Inner: View {
+    @State private var textBuilder: TextBuilder
+
+    let content: Content
+    let textEnvironment: TextEnvironmentValues
+
+    init(content: Content, textEnvironment: TextEnvironmentValues) {
+      self.content = content
+      self.textEnvironment = textEnvironment
+      self._textBuilder = State(initialValue: TextBuilder(content, environment: textEnvironment))
+    }
+
+    var body: some View {
+      textBuilder.text
+        .customAttribute(TextFragmentAttribute())
+        .onGeometryChange(for: CGSize?.self, of: \.textContainerSize) { size in
+          guard let size else { return }
+          textBuilder.sizeChanged(size, environment: textEnvironment)
+        }
+        .onChange(of: content) { _, newValue in
+          self.textBuilder = TextBuilder(newValue, environment: textEnvironment)
+        }
+    }
   }
 }
 

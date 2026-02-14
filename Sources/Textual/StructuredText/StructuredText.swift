@@ -102,7 +102,7 @@ import SwiftUI
 /// When you need to parse something other than Markdown, use ``init(_:parser:)`` with a custom
 /// ``MarkupParser`` implementation.
 public struct StructuredText: View {
-  @State private var attributedString = AttributedString()
+  @State private var attributedString: AttributedString
 
   private let markup: String
   private let parser: any MarkupParser
@@ -113,6 +113,12 @@ public struct StructuredText: View {
   public init(_ markup: String, parser: any MarkupParser) {
     self.markup = markup
     self.parser = parser
+    // Parse eagerly so the first render has the correct content and height,
+    // avoiding an empty → populated two-pass layout that causes scroll jumping
+    // in LazyVStack with .defaultScrollAnchor(.bottom).
+    self._attributedString = State(
+      initialValue: (try? parser.attributedString(for: markup)) ?? .init()
+    )
   }
 
   public var body: some View {
@@ -122,7 +128,7 @@ public struct StructuredText: View {
         .modifier(TextSelectionCoordination())
     }
     .coordinateSpace(.textContainer)
-    .onChange(of: markup, initial: true) {
+    .onChange(of: markup) {
       markupDidChange(markup)
     }
     // Disable line limit to avoid per-fragment truncation
