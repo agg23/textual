@@ -42,8 +42,9 @@ extension TextFragment {
       let attachmentSizes = content.attachmentSizes(for: .init(size), in: environment)
       let cacheKey = KeyBox(attachmentSizes)
 
-      if let text = cache.object(forKey: cacheKey) {
-        self.text = text.wrappedValue
+      if cache.object(forKey: cacheKey) != nil {
+        // Cache hit. self.text is already up-to-date for these attachment sizes. No write necessary
+        return
       } else {
         let text = Text(
           attributedString: content,
